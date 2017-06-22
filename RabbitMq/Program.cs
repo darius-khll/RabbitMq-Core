@@ -1,37 +1,16 @@
-﻿using RabbitMQ.Client;
-using System;
-using System.Text;
+﻿using System;
 
 namespace RabbitMq
 {
     class Program
     {
-        static void Main() //Send
+        static void Main(string[] args)
         {
-
-            var factory = new ConnectionFactory() { HostName = "localhost", UserName = "ali", Password = "ali", VirtualHost = "/" };
-
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            //new Send().SendMessage();
+            for (int i = 0; i < 10; i++)
             {
-                channel.QueueDeclare(queue: "hello",
-                                     durable: false,
-                                     exclusive: false,
-                                     autoDelete: false,
-                                     arguments: null);
-
-                string message = "Hello World!";
-                var body = Encoding.UTF8.GetBytes(message);
-
-                channel.BasicPublish(exchange: "",
-                                     routingKey: "hello",
-                                     basicProperties: null,
-                                     body: body);
-                Console.WriteLine(" [x] Sent {0}", message);
+                new WorkerQueue().Send(args.Length > 0 ? args[0] : "ali khalili" + i);
             }
-
-            Console.WriteLine(" Press [enter] to exit.");
-            Console.ReadLine();
         }
 
     }
